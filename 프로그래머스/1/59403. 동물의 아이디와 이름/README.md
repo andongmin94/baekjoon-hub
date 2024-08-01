@@ -1,6 +1,6 @@
-# [level 1] 역순 정렬하기 - 59035 
+# [level 1] 동물의 아이디와 이름 - 59403 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/59035) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/59403) 
 
 ### 성능 요약
 
@@ -16,7 +16,7 @@ Empty
 
 ### 제출 일자
 
-2024년 07월 31일 17:50:11
+2024년 07월 31일 17:49:29
 
 ### 문제 설명
 
@@ -60,36 +60,44 @@ Empty
 </tr>
 </tbody>
       </table>
-<p>동물 보호소에 들어온 모든 동물의 이름과 보호 시작일을 조회하는 SQL문을 작성해주세요. 이때 결과는 ANIMAL_ID 역순으로 보여주세요. SQL을 실행하면 다음과 같이 출력되어야 합니다.</p>
+<p>동물 보호소에 들어온 모든 동물의 아이디와 이름을 ANIMAL_ID순으로 조회하는 SQL문을 작성해주세요. SQL을 실행하면 다음과 같이 출력되어야 합니다.</p>
 <table class="table">
         <thead><tr>
+<th>ANIMAL_ID</th>
 <th>NAME</th>
-<th>DATETIME</th>
 </tr>
 </thead>
         <tbody><tr>
-<td>Rocky</td>
-<td>2016-06-07 09:17:00</td>
+<td>A349996</td>
+<td>Sugar</td>
 </tr>
 <tr>
-<td>Shelly</td>
-<td>2015-01-29 15:01:00</td>
+<td>A350276</td>
+<td>Jewel</td>
 </tr>
 <tr>
-<td>Benji</td>
-<td>2016-04-19 13:28:00</td>
+<td>A350375</td>
+<td>Meo</td>
 </tr>
 <tr>
-<td>Jackie</td>
-<td>2016-01-03 16:25:00</td>
+<td>A352555</td>
+<td>Harley</td>
 </tr>
 <tr>
-<td>*Sam</td>
-<td>2016-03-13 11:17:00</td>
+<td>A352713</td>
+<td>Gia</td>
+</tr>
+<tr>
+<td>A352872</td>
+<td>Peanutbutter</td>
+</tr>
+<tr>
+<td>A353259</td>
+<td>Bj</td>
 </tr>
 </tbody>
       </table>
-<p>..이하 생략</p>
+<p>((이하 생략))</p>
 
 <hr>
 
