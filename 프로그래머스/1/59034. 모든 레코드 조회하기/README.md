@@ -1,6 +1,6 @@
-# [level 1] 동물의 아이디와 이름 - 59403 
+# [level 1] 모든 레코드 조회하기 - 59034 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/59403?language=oracle) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/59034?language=mysql) 
 
 ### 성능 요약
 
@@ -16,7 +16,7 @@ Empty
 
 ### 제출 일자
 
-2024년 10월 05일 09:13:09
+2024년 10월 04일 13:45:09
 
 ### 문제 설명
 
@@ -60,44 +60,52 @@ Empty
 </tr>
 </tbody>
       </table>
-<p>동물 보호소에 들어온 모든 동물의 아이디와 이름을 ANIMAL_ID순으로 조회하는 SQL문을 작성해주세요. SQL을 실행하면 다음과 같이 출력되어야 합니다.</p>
+<p>동물 보호소에 들어온 모든 동물의 정보를 ANIMAL_ID순으로 조회하는 SQL문을 작성해주세요. SQL을 실행하면 다음과 같이 출력되어야 합니다.</p>
 <table class="table">
         <thead><tr>
 <th>ANIMAL_ID</th>
+<th>ANIMAL_TYPE</th>
+<th>DATETIME</th>
+<th>INTAKE_CONDITION</th>
 <th>NAME</th>
+<th>SEX_UPON_INTAKE</th>
 </tr>
 </thead>
         <tbody><tr>
 <td>A349996</td>
+<td>Cat</td>
+<td>2018-01-22 14:32:00</td>
+<td>Normal</td>
 <td>Sugar</td>
+<td>Neutered Male</td>
 </tr>
 <tr>
 <td>A350276</td>
+<td>Cat</td>
+<td>2017-08-13 13:50:00</td>
+<td>Normal</td>
 <td>Jewel</td>
+<td>Spayed Female</td>
 </tr>
 <tr>
 <td>A350375</td>
+<td>Cat</td>
+<td>2017-03-06 15:01:00</td>
+<td>Normal</td>
 <td>Meo</td>
+<td>Neutered Male</td>
 </tr>
 <tr>
 <td>A352555</td>
+<td>Dog</td>
+<td>2014-08-08 04:20:00</td>
+<td>Normal</td>
 <td>Harley</td>
-</tr>
-<tr>
-<td>A352713</td>
-<td>Gia</td>
-</tr>
-<tr>
-<td>A352872</td>
-<td>Peanutbutter</td>
-</tr>
-<tr>
-<td>A353259</td>
-<td>Bj</td>
+<td>Spayed Female</td>
 </tr>
 </tbody>
       </table>
-<p>((이하 생략))</p>
+<p>..이하 생략</p>
 
 <hr>
 

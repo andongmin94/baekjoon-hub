@@ -1,6 +1,6 @@
-# [level 1] 동물의 아이디와 이름 - 59403 
+# [level 1] 아픈 동물 찾기 - 59036 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/59403?language=oracle) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/59036) 
 
 ### 성능 요약
 
@@ -16,7 +16,7 @@ Empty
 
 ### 제출 일자
 
-2024년 10월 05일 09:13:09
+2024년 10월 04일 14:16:40
 
 ### 문제 설명
 
@@ -60,7 +60,56 @@ Empty
 </tr>
 </tbody>
       </table>
-<p>동물 보호소에 들어온 모든 동물의 아이디와 이름을 ANIMAL_ID순으로 조회하는 SQL문을 작성해주세요. SQL을 실행하면 다음과 같이 출력되어야 합니다.</p>
+<p>동물 보호소에 들어온 동물 중 아픈 동물<sup id="fnref1"><a href="#fn1">1</a></sup>의 아이디와 이름을 조회하는 SQL 문을 작성해주세요. 이때 결과는 아이디 순으로 조회해주세요. </p>
+
+<h5>예시</h5>
+
+<p>예를 들어 <code>ANIMAL_INS</code> 테이블이 다음과 같다면</p>
+<table class="table">
+        <thead><tr>
+<th>ANIMAL_ID</th>
+<th>ANIMAL_TYPE</th>
+<th>DATETIME</th>
+<th>INTAKE_CONDITION</th>
+<th>NAME</th>
+<th>SEX_UPON_INTAKE</th>
+</tr>
+</thead>
+        <tbody><tr>
+<td>A365172</td>
+<td>Dog</td>
+<td>2014-08-26 12:53:00</td>
+<td>Normal</td>
+<td>Diablo</td>
+<td>Neutered Male</td>
+</tr>
+<tr>
+<td>A367012</td>
+<td>Dog</td>
+<td>2015-09-16 09:06:00</td>
+<td>Sick</td>
+<td>Miller</td>
+<td>Neutered Male</td>
+</tr>
+<tr>
+<td>A365302</td>
+<td>Dog</td>
+<td>2017-01-08 16:34:00</td>
+<td>Aged</td>
+<td>Minnie</td>
+<td>Spayed Female</td>
+</tr>
+<tr>
+<td>A381217</td>
+<td>Dog</td>
+<td>2017-07-08 09:41:00</td>
+<td>Sick</td>
+<td>Cherokee</td>
+<td>Neutered Male</td>
+</tr>
+</tbody>
+      </table>
+<p>이 중 아픈 동물은 Miller와 Cherokee입니다. 따라서 SQL문을 실행하면 다음과 같이 나와야 합니다. </p>
 <table class="table">
         <thead><tr>
 <th>ANIMAL_ID</th>
@@ -68,40 +117,29 @@ Empty
 </tr>
 </thead>
         <tbody><tr>
-<td>A349996</td>
-<td>Sugar</td>
+<td>A367012</td>
+<td>Miller</td>
 </tr>
 <tr>
-<td>A350276</td>
-<td>Jewel</td>
-</tr>
-<tr>
-<td>A350375</td>
-<td>Meo</td>
-</tr>
-<tr>
-<td>A352555</td>
-<td>Harley</td>
-</tr>
-<tr>
-<td>A352713</td>
-<td>Gia</td>
-</tr>
-<tr>
-<td>A352872</td>
-<td>Peanutbutter</td>
-</tr>
-<tr>
-<td>A353259</td>
-<td>Bj</td>
+<td>A381217</td>
+<td>Cherokee</td>
 </tr>
 </tbody>
       </table>
-<p>((이하 생략))</p>
-
 <hr>
 
 <p>본 문제는 <a href="https://www.kaggle.com/aaronschlegel/austin-animal-center-shelter-intakes-and-outcomes" target="_blank" rel="noopener">Kaggle의 "Austin Animal Center Shelter Intakes and Outcomes"</a>에서 제공하는 데이터를 사용하였으며 <a href="https://opendatacommons.org/licenses/odbl/1.0/" target="_blank" rel="noopener">ODbL</a>의 적용을 받습니다.</p>
+
+<div class="footnotes">
+<hr>
+<ol>
+
+<li id="fn1">
+<p><code>INTAKE_CONDITION</code>이 Sick 인 경우를 뜻함&nbsp;<a href="#fnref1">↩</a></p>
+</li>
+
+</ol>
+</div>
 
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges
