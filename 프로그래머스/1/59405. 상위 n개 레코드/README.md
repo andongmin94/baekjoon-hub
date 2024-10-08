@@ -1,6 +1,6 @@
-# [level 2] 동물 수 구하기 - 59406 
+# [level 1] 상위 n개 레코드 - 59405 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/59406) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/59405?language=oracle) 
 
 ### 성능 요약
 
@@ -8,7 +8,7 @@
 
 ### 구분
 
-코딩테스트 연습 > SUM， MAX， MIN
+코딩테스트 연습 > SELECT
 
 ### 채점결과
 
@@ -16,7 +16,7 @@ Empty
 
 ### 제출 일자
 
-2024년 10월 07일 08:52:46
+2024년 10월 07일 09:01:45
 
 ### 문제 설명
 
@@ -60,7 +60,7 @@ Empty
 </tr>
 </tbody>
       </table>
-<p>동물 보호소에 동물이 몇 마리 들어왔는지 조회하는 SQL 문을 작성해주세요. </p>
+<p>동물 보호소에 가장 먼저 들어온 동물의 이름을 조회하는 SQL 문을 작성해주세요. </p>
 
 <h5>예시</h5>
 
@@ -109,18 +109,18 @@ Empty
 </tr>
 </tbody>
       </table>
-<p>동물 보호소에 들어온 동물은 4마리입니다. 따라서 SQL문을 실행하면 다음과 같이 나와야 합니다.</p>
+<p>이 중 가장 보호소에 먼저 들어온 동물은 Jack입니다. 따라서 SQL문을 실행하면 다음과 같이 나와야 합니다.</p>
 <table class="table">
         <thead><tr>
-<th>count</th>
+<th>NAME</th>
 </tr>
 </thead>
         <tbody><tr>
-<td>4</td>
+<td>Jack</td>
 </tr>
 </tbody>
       </table>
-<p>※ 컬럼 이름(위 예제에서는 count)은 일치하지 않아도 됩니다.</p>
+<p>※ 보호소에 가장 먼저 들어온 동물은 한 마리인 경우만 테스트 케이스로 주어집니다.</p>
 
 <hr>
 
