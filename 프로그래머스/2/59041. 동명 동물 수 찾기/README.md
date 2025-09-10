@@ -1,6 +1,6 @@
-# [level 2] 최솟값 구하기 - 59038 
+# [level 2] 동명 동물 수 찾기 - 59041 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/59038?language=mysql) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/59041) 
 
 ### 성능 요약
 
@@ -8,7 +8,7 @@
 
 ### 구분
 
-코딩테스트 연습 > SUM， MAX， MIN
+코딩테스트 연습 > GROUP BY
 
 ### 채점결과
 
@@ -16,7 +16,7 @@ Empty
 
 ### 제출 일자
 
-2025년 09월 09일 10:35:37
+2025년 09월 10일 14:48:20
 
 ### 문제 설명
 
@@ -60,7 +60,7 @@ Empty
 </tr>
 </tbody>
       </table>
-<p>동물 보호소에 가장 먼저 들어온 동물은 언제 들어왔는지 조회하는 SQL 문을 작성해주세요. </p>
+<p>동물 보호소에 들어온 동물 이름 중 두 번 이상 쓰인 이름과 해당 이름이 쓰인 횟수를 조회하는 SQL문을 작성해주세요. 이때 결과는 이름이 없는 동물은 집계에서 제외하며, 결과는 이름 순으로 조회해주세요. </p>
 
 <h5>예시</h5>
 
@@ -76,52 +76,78 @@ Empty
 </tr>
 </thead>
         <tbody><tr>
-<td>A399552</td>
+<td>A396810</td>
 <td>Dog</td>
-<td>2013-10-14 15:38:00</td>
+<td>2016-08-22 16:13:00</td>
+<td>Injured</td>
+<td>Raven</td>
+<td>Spayed Female</td>
+</tr>
+<tr>
+<td>A377750</td>
+<td>Dog</td>
+<td>2017-10-25 17:17:00</td>
 <td>Normal</td>
-<td>Jack</td>
+<td>Lucy</td>
+<td>Spayed Female</td>
+</tr>
+<tr>
+<td>A355688</td>
+<td>Dog</td>
+<td>2014-01-26 13:48:00</td>
+<td>Normal</td>
+<td>Shadow</td>
 <td>Neutered Male</td>
 </tr>
 <tr>
-<td>A379998</td>
+<td>A399421</td>
 <td>Dog</td>
-<td>2013-10-23 11:42:00</td>
+<td>2015-08-25 14:08:00</td>
 <td>Normal</td>
-<td>Disciple</td>
-<td>Intact Male</td>
-</tr>
-<tr>
-<td>A370852</td>
-<td>Dog</td>
-<td>2013-11-03 15:04:00</td>
-<td>Normal</td>
-<td>Katie</td>
+<td>Lucy</td>
 <td>Spayed Female</td>
 </tr>
 <tr>
-<td>A403564</td>
+<td>A400680</td>
 <td>Dog</td>
-<td>2013-11-18 17:03:00</td>
+<td>2017-06-17 13:29:00</td>
 <td>Normal</td>
-<td>Anna</td>
+<td>Lucy</td>
+<td>Spayed Female</td>
+</tr>
+<tr>
+<td>A410668</td>
+<td>Cat</td>
+<td>2015-11-19 13:41:00</td>
+<td>Normal</td>
+<td>Raven</td>
 <td>Spayed Female</td>
 </tr>
 </tbody>
       </table>
-<p>가장 먼저 들어온 동물은 Jack이고, Jack은 2013-10-14 15:38:00에 들어왔습니다. 따라서 SQL문을 실행하면 다음과 같이 나와야 합니다.</p>
+<ul>
+<li>Raven 이름은 2번 쓰였습니다.</li>
+<li>Lucy 이름은 3번 쓰였습니다</li>
+<li>Shadow 이름은 1번 쓰였습니다.</li>
+</ul>
+
+<p>따라서 SQL문을 실행하면 다음과 같이 나와야 합니다. </p>
 <table class="table">
         <thead><tr>
-<th>시간</th>
+<th>NAME</th>
+<th>COUNT</th>
 </tr>
 </thead>
         <tbody><tr>
-<td>2013-10-14 15:38:00</td>
+<td>Lucy</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Raven</td>
+<td>2</td>
 </tr>
 </tbody>
       </table>
-<p>※ 컬럼 이름(위 예제에서는 "시간")은 일치하지 않아도 됩니다.</p>
-
 <hr>
 
 <p>본 문제는 <a href="https://www.kaggle.com/aaronschlegel/austin-animal-center-shelter-intakes-and-outcomes" target="_blank" rel="noopener">Kaggle의 "Austin Animal Center Shelter Intakes and Outcomes"</a>에서 제공하는 데이터를 사용하였으며 <a href="https://opendatacommons.org/licenses/odbl/1.0/" target="_blank" rel="noopener">ODbL</a>의 적용을 받습니다.</p>
