@@ -6,6 +6,7 @@ int main()
 {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
-    cout << "0";
+
+    int n; cin >> n;
+    cout << (n < 13 ? n : n + 1) << '\n';
 }
