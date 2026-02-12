@@ -2,23 +2,17 @@
 
 using namespace std;
 
-int main()
+int main() 
 {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-
-    string s = "";
-    s += "SciComLove";
-    deque<char> d;
-    for (auto e : s) d.push_back(e);
-
+    
+    string s = "SciComLove";
     int n; cin >> n;
-    while (n--)
-    {
-		char c = d.front();
-		d.pop_front();
-		d.push_back(c);
-    }
+    int m = n % s.length();
 
-	for (auto e : d) cout << e;
+    for (int i = m; i < s.length(); i++)
+        cout << s[i];
+    for (int i = 0; i < m; i++)
+        cout << s[i];
 }
