@@ -1,12 +1,12 @@
-#include <iostream>
+#include <bits/stdc++.h>
+
+using namespace std;
 
 int main()
 {
-	int A, B;
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-	std::cin >> A >> B;
-
-	std::cout << A + B << std::endl;
-
-	return 0;
+    int a, b; cin >> a >> b;
+    cout << a + b;    
 }
