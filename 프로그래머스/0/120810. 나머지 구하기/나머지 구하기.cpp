@@ -4,5 +4,7 @@
 using namespace std;
 
 int solution(int num1, int num2) {
-    return [&]{return num1 % num2;}();
+    int answer = -1;
+    return [&]() -> int { return num1 % num2;} ();
+    return answer;
 }
