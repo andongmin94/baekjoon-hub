@@ -4,12 +4,14 @@
 using namespace std;
 
 int solution(vector<int> array, int height) {
-    int answer = 0;
-    //
-    for (auto& e : array)
+    int answer = [&]() -> int
     {
-        if (e > height) answer++;
-    }
-    //
+        int res = 0;
+        for (auto e : array)
+        {
+            if (e > height) res++;
+        }
+        return res;
+    }();
     return answer;
 }
