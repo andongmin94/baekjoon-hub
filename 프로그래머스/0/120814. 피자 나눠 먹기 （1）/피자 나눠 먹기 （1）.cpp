@@ -4,10 +4,10 @@
 using namespace std;
 
 int solution(int n) {
-    int answer = 0;
-    //
-    answer += n / 7;
-    if (n % 7) answer++;
-    //
+    int answer = [&]() -> int
+    {
+        if (n % 7) return n / 7 + 1;
+        return n / 7;
+    }();
     return answer;
 }
