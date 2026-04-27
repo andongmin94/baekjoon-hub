@@ -4,13 +4,14 @@
 using namespace std;
 
 double solution(vector<int> numbers) {
-    double answer = 0;
-    //
-    for (auto& e : numbers)
+    double answer = [&]() -> double
     {
-        answer += e;
-    }
-    answer /= numbers.size();
-    //
+        double sum = 0;
+        for (auto e : numbers)
+        {
+            sum += e;
+        }
+        return sum / numbers.size();
+    }();
     return answer;
 }
