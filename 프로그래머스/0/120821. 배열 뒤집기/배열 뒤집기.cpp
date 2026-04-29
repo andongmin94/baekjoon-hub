@@ -1,13 +1,14 @@
 #include <string>
 #include <vector>
+#include <algorithm>  // reverse
 
 using namespace std;
 
 vector<int> solution(vector<int> num_list) {
-    vector<int> answer;
-    //
-    for (int i = num_list.size(); i > 0; i--)
-        answer.push_back(num_list[i - 1]);
-    //
+    vector<int> answer = [&]() -> vector<int>
+    {
+        reverse(num_list.begin(), num_list.end());
+        return num_list;
+    }();
     return answer;
 }
