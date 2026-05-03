@@ -5,13 +5,15 @@ using namespace std;
 
 string solution(string my_string, int n) {
     string answer = "";
-    //
-    for (auto& e : my_string)
+    return [&]() -> string
     {
-        int a = n;
-        while(a--)
-            answer += e;
-    }
-    //
+        string s = "";
+        for (auto e : my_string)
+        {
+            for (int i = 0; i < n; i++)
+                s += e;
+        }
+        return s;
+    }();
     return answer;
 }
