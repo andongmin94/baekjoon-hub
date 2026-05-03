@@ -5,9 +5,15 @@ using namespace std;
 
 string solution(string my_string, string letter) {
     string answer = "";
-    //
-    for (const auto& e : my_string)
-        if (e != letter[0]) answer += e;
-    //
+    return [&]() -> string
+    {
+        string s = "";
+        for (auto e : my_string)
+        {
+            if (e == letter[0]) continue;
+            s += e;
+        }
+        return s;
+    }();   
     return answer;
 }
