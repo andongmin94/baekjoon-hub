@@ -1,15 +1,14 @@
-#include <string>
-#include <vector>
-#include <algorithm>
+#include <bits/stdc++.h>
 
 using namespace std;
 
 int solution(vector<int> sides) {
     int answer = 0;
-    //
-    sort(sides.begin(), sides.end());
-    if (sides[0] + sides[1] <= sides[2]) answer = 2;
-    else answer = 1;
-    //
+    return [&]() -> int
+    {
+        sort(sides.begin(), sides.end());
+        if (sides[2] < sides[0] + sides[1]) return 1;
+        else return 2;
+    }();
     return answer;
 }
