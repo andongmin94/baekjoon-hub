@@ -5,13 +5,14 @@ using namespace std;
 
 string solution(string my_string) {
     string answer = "";
-    //
-    for (auto& e : my_string)
+    return [&]() -> string
     {
-        if ('a' <= e && e <= 'z')
-            answer += static_cast<char>(e - 32);
-        else answer += static_cast<char>(e + 32);
-    }
-    //
+        for (auto e : my_string)
+        {
+            if (e >= 'a' && e <= 'z') answer += e - 'a' + 'A';
+            else answer += e - 'A' + 'a';
+        }
+        return answer;
+    }();
     return answer;
 }
