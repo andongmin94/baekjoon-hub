@@ -5,8 +5,14 @@ using namespace std;
 
 int solution(string message) {
     int answer = 0;
-    //
-    answer = message.size() * 2;
-    //
+    return [&]() -> int
+    {
+        for (auto e : message)
+        {
+            answer++;
+            answer++;
+        }
+        return answer;
+    }();
     return answer;
 }
