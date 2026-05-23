@@ -1,10 +1,10 @@
 # [level 1] 경기도에 위치한 식품창고 목록 출력하기 - 131114 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/131114?language=mysql) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/131114) 
 
 ### 성능 요약
 
-메모리: 0.0 MB, 시간: 0.00 ms
+메모리: undefined, 시간: 
 
 ### 구분
 
@@ -12,11 +12,11 @@
 
 ### 채점결과
 
-Empty
+합계: 100.0 / 100.0
 
 ### 제출 일자
 
-2024년 10월 07일 13:02:29
+2026년 05월 23일 14:15:57
 
 ### 문제 설명
 
