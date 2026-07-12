@@ -1,10 +1,10 @@
 # [level 0] 문자 리스트를 문자열로 변환하기 - 181941 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181941?language=cpp) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181941) 
 
 ### 성능 요약
 
-메모리: 4.06 MB, 시간: 0.01 ms
+메모리: 78.3 MB, 시간: 1.84 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 08월 02일 17:32:04
+2026년 07월 13일 00:31:10
 
 ### 문제 설명
 
