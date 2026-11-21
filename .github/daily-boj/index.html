@@ -15,16 +15,28 @@
     h1 { margin: 0; font-size: 1.65rem; letter-spacing: -.04em; }
     p { margin: .65rem 0; word-break: keep-all; }
     nav { display: grid; gap: .4rem; justify-items: start; }
-    [hidden] { display: none; }
     a { color: #075b96; text-underline-offset: .18em; }
     a:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
-    @media (prefers-color-scheme: dark) { a { color: #8bc9ff; } }
+    .primary {
+      display: inline-block; margin: .5rem 0 .85rem; padding: .6rem 1rem;
+      background: #075b96; color: white; border-radius: .4rem;
+      font-weight: 600; text-decoration: none;
+    }
+    .primary:focus-visible { outline-color: #347fb5; }
+    .review { display: block; width: fit-content; font-size: .94rem; color: #536171; }
+    @media (prefers-color-scheme: dark) {
+      a { color: #8bc9ff; }
+      .primary { background: #8bc9ff; color: #102234; }
+      .review { color: #b1beca; }
+    }
+    [hidden] { display: none; }
   </style>
 </head>
 <body>
   <main>
-    <h1>오늘의 백준</h1>
+    <h1 id="heading">오늘의 백준</h1>
     <p id="status" role="status">오늘의 추천을 확인하고 있어요.</p>
+    <a id="extra" class="primary" hidden>다음 문제 풀기</a>
     <a id="problem" hidden>백준에서 문제 열기</a>
     <nav id="fallback" aria-label="추천을 확인할 수 없을 때" hidden>
       <a href="https://solved.ac/problems?q=lang%3Ako%20oj%3Aboj%20-solved_by%3Aandongmin94%20tier%3Ab5..r1&amp;sort=level&amp;direction=asc">내가 아직 풀지 않은 한국어 문제 보기</a>
@@ -52,7 +64,8 @@
         const response = await fetch('./picks.json?day=' + today, {cache: 'no-store'});
         if (!response.ok) throw new Error('fetch');
         const data = await response.json();
-        const activeDay = Object.keys(data.picks).filter(day => day <= today).sort().pop();
+        const days = Object.keys(data.picks).sort();
+        const activeDay = days.filter(day => day <= today).pop();
         const id = data.picks[activeDay];
         if (!Number.isSafeInteger(id) || id <= 0) {
           statusText.textContent = '오늘 날짜로 등록된 추천 문제가 없어요.';
@@ -62,6 +75,22 @@
         problemLink.href = 'https://www.acmicpc.net/problem/' + id;
         problemLink.textContent = '백준 ' + id + '번 문제 열기';
         problemLink.hidden = false;
+        const nextDay = days.find(day => day > today);
+        if (data.rule === 'until-solved' && nextDay !== undefined) {
+          document.getElementById('heading').textContent = '오늘 문제는 이미 풀었어요';
+          problemLink.textContent = '내가 푼 ' + id + '번 다시 보기';
+          problemLink.className = 'review';
+          const extraId = data.picks[nextDay];
+          if (Number.isSafeInteger(extraId) && extraId > 0 && extraId !== id) {
+            const extraLink = document.getElementById('extra');
+            extraLink.href = 'https://www.acmicpc.net/problem/' + extraId;
+            extraLink.hidden = false;
+            statusText.textContent = '정규 추천은 다음 오전 6시에 바뀌어요.';
+          } else {
+            statusText.textContent = '지금 추천할 추가 문제가 없어요.';
+          }
+          return;
+        }
         statusText.textContent = '오늘의 문제로 이동합니다.';
         window.location.replace(problemLink.href);
       } catch {
