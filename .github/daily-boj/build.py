@@ -25,7 +25,9 @@ def previous_picks(base_url):
     url = base_url.rstrip("/") + "/picks.json?run=" + os.environ["GITHUB_RUN_ID"]
     try:
         with urlopen(url, timeout=25) as response:
-            return json.load(response)["picks"]
+            published = json.load(response)
+            # Start a fresh history when replacing the manually selected problems.
+            return published["picks"] if published["source"] == "api" else {}
     except HTTPError as error:
         # The first deployment has no published history yet.
         if error.code == 404:
@@ -59,7 +61,7 @@ def main():
     output.mkdir(exist_ok=True)
     shutil.copyfile(source / "index.html", output / "index.html")
     (output / "picks.json").write_text(
-        json.dumps({"source": "api" if client_id else "verified", "picks": picks}),
+        json.dumps({"source": "api", "picks": picks}),
         encoding="utf-8",
     )
 

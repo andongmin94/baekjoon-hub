@@ -9,8 +9,6 @@ from urllib.request import Request, urlopen
 
 API_URL = "https://backstage.solved.ac/api/v4/problems"
 QUERY = "lang:ko oj:boj -solved_by:andongmin94 tier:b5..r1"
-# 2026-11-22에 solved.ac와 풀이 저장소로 대조한 브론즈 V 문제.
-BOOTSTRAP_IDS = (32775, 32929, 32951)
 
 
 def _get_page(client_id, client_secret, page):
@@ -43,10 +41,8 @@ def _get_page(client_id, client_secret, page):
 def candidates(client_id, client_secret, solved):
     """Return one BOJ ID per eligible problem in the lowest remaining tier."""
     solved_ids = {int(problem_id) for problem_id in solved}
-    if not client_id and not client_secret:
-        return [problem_id for problem_id in BOOTSTRAP_IDS if problem_id not in solved_ids]
     if not client_id or not client_secret:
-        raise ValueError("solved.ac 앱 ID와 시크릿을 모두 설정해 주세요.")
+        raise ValueError("GitHub Actions에 SOLVED_AC_CLIENT_ID와 SOLVED_AC_CLIENT_SECRET을 등록해 주세요.")
 
     minimum_level = None
     eligible = set()
