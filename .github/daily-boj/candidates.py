@@ -13,7 +13,10 @@ QUERY = "lang:ko oj:boj -solved_by:andongmin94 tier:b5..r1"
 
 def _get_page(client_id, client_secret, page):
     params = urlencode({"q": QUERY, "sort": "level", "direction": "asc", "page": page})
-    request = Request(f"{API_URL}?{params}", headers={"Accept": "application/json"})
+    request = Request(f"{API_URL}?{params}", headers={
+        "Accept": "application/json",
+        "User-Agent": "baekjoon-hub-daily/1.0 (+https://github.com/andongmin94/baekjoon-hub)",
+    })
     request.add_unredirected_header("x-client-id", client_id)
     request.add_unredirected_header("x-client-secret", client_secret)
     try:
@@ -23,7 +26,8 @@ def _get_page(client_id, client_secret, page):
         if error.code in (401, 403):
             reason = error.reason
             if error.headers.get_content_type() == "application/json":
-                reason = json.load(error).get("error", {}).get("code", reason)
+                detail = json.load(error)
+                reason = detail.get("error", {}).get("code") or detail.get("title", reason)
             raise ValueError(f"solved.ac API가 요청을 거부했습니다 (HTTP {error.code}, {reason}).") from None
         if error.code == 429:
             raise ValueError("solved.ac API 호출 한도에 도달했습니다.") from None
