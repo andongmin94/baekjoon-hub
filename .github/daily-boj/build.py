@@ -37,12 +37,16 @@ def previous_picks(base_url):
 
 def daily_plan(today, previous, eligible):
     day = today.isoformat()
+    next_day = (today + timedelta(days=1)).isoformat()
     picks = {date: pid for date, pid in previous.items() if date <= day}
+    # Keep the visible midnight-based pick during the first switch to 06:00.
+    if not picks and next_day in previous:
+        picks[day] = previous[next_day]
     # The last date was prepared in advance. Recheck it on the day's first run.
     if max(previous, default="") == day and picks[day] not in eligible:
         del picks[day]
     last_used = {pid: date for date, pid in sorted(picks.items())}
-    for date in (day, (today + timedelta(days=1)).isoformat()):
+    for date in (day, next_day):
         if date in picks or not eligible:
             continue
         problem = min(eligible, key=lambda pid: (last_used.get(pid, ""), pid))
@@ -52,7 +56,8 @@ def daily_plan(today, previous, eligible):
 
 
 def main():
-    today = datetime.now(timezone(timedelta(hours=9))).date()
+    seoul_now = datetime.now(timezone(timedelta(hours=9)))
+    today = (seoul_now - timedelta(hours=6)).date()
     source = Path(__file__).parent
     client_id = os.environ.get("SOLVED_AC_CLIENT_ID", "")
     secret = os.environ.get("SOLVED_AC_CLIENT_SECRET", "")
