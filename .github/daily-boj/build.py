@@ -37,8 +37,10 @@ def previous_picks(base_url):
 
 def daily_plan(today, previous, eligible):
     day = today.isoformat()
-    # Keep an already published pick for the entire Korean calendar day.
     picks = {date: pid for date, pid in previous.items() if date <= day}
+    # The last date was prepared in advance. Recheck it on the day's first run.
+    if max(previous, default="") == day and picks[day] not in eligible:
+        del picks[day]
     last_used = {pid: date for date, pid in sorted(picks.items())}
     for date in (day, (today + timedelta(days=1)).isoformat()):
         if date in picks or not eligible:
