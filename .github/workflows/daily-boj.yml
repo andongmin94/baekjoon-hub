@@ -1,0 +1,52 @@
+name: 오늘의 백준
+on:
+  workflow_dispatch:
+  schedule:
+    # 00:17 Asia/Seoul. The preceding build also prepares tomorrow for midnight.
+    - cron: '17 15 * * *'
+  push:
+    branches: [main]
+    paths:
+      - '백준/**'
+      - '.github/daily-boj/**'
+      - '.github/workflows/daily-boj.yml'
+
+concurrency:
+  group: daily-boj-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: .github
+      - uses: actions/configure-pages@v5
+        id: pages
+      - name: 오늘과 내일의 문제 선택
+        run: python3 .github/daily-boj/build.py
+        env:
+          PAGES_URL: ${{ steps.pages.outputs.base_url }}
+          SOLVED_AC_CLIENT_ID: ${{ secrets.SOLVED_AC_CLIENT_ID }}
+          SOLVED_AC_CLIENT_SECRET: ${{ secrets.SOLVED_AC_CLIENT_SECRET }}
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment

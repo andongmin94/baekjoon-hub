@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>오늘의 백준</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font: 16px/1.65 system-ui, sans-serif;
+    }
+    body { margin: 0; padding: 16vh 20px 2rem; }
+    main { max-width: 30rem; margin: 0 auto; }
+    h1 { margin: 0; font-size: 1.65rem; letter-spacing: -.04em; }
+    p { margin: .65rem 0; word-break: keep-all; }
+    nav { display: grid; gap: .4rem; justify-items: start; }
+    [hidden] { display: none; }
+    a { color: #075b96; text-underline-offset: .18em; }
+    a:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+    @media (prefers-color-scheme: dark) { a { color: #8bc9ff; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>오늘의 백준</h1>
+    <p id="status" role="status">오늘의 추천을 확인하고 있어요.</p>
+    <a id="problem" hidden>백준에서 문제 열기</a>
+    <nav id="fallback" aria-label="추천을 확인할 수 없을 때" hidden>
+      <a href="https://solved.ac/problems?q=lang%3Ako%20oj%3Aboj%20-solved_by%3Aandongmin94%20tier%3Ab5..r1&amp;sort=level&amp;direction=asc">내가 아직 풀지 않은 한국어 문제 보기</a>
+      <a href="https://github.com/andongmin94/baekjoon-hub/settings/secrets/actions">GitHub Actions 시크릿 설정</a>
+    </nav>
+    <noscript>자동으로 문제를 열려면 자바스크립트를 켜 주세요.</noscript>
+  </main>
+  <script>
+    const statusText = document.getElementById('status');
+    const problemLink = document.getElementById('problem');
+    const fallback = document.getElementById('fallback');
+
+    function todayInKorea() {
+      const date = new Intl.DateTimeFormat('en', {
+        timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit'
+      });
+      const parts = Object.fromEntries(date.formatToParts().map(({type, value}) => [type, value]));
+      return [parts.year, parts.month, parts.day].join('-');
+    }
+
+    async function openToday() {
+      const today = todayInKorea();
+      try {
+        const response = await fetch('./picks.json?day=' + today, {cache: 'no-store'});
+        if (!response.ok) throw new Error('fetch');
+        const data = await response.json();
+        const id = data.picks?.[today];
+        if (!Number.isSafeInteger(id) || id <= 0) {
+          statusText.textContent = '오늘 날짜로 등록된 추천 문제가 없어요.';
+          fallback.hidden = false;
+          return;
+        }
+        problemLink.href = 'https://www.acmicpc.net/problem/' + id;
+        problemLink.textContent = '백준 ' + id + '번 문제 열기';
+        problemLink.hidden = false;
+        statusText.textContent = '오늘의 문제로 이동합니다.';
+        window.location.replace(problemLink.href);
+      } catch {
+        statusText.textContent = '오늘의 추천을 불러올 수 없어요.';
+        fallback.hidden = false;
+      }
+    }
+
+    openToday();
+  </script>
+</body>
+</html>
