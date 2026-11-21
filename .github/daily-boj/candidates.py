@@ -78,10 +78,10 @@ def solved_at(client_id, client_secret, problem_id):
 
 
 def candidates(client_id, client_secret, solved):
-    """Return one BOJ ID per eligible problem in the lowest remaining tier."""
+    """Map eligible BOJ IDs in the lowest remaining tier to their solver counts."""
     solved_ids = {int(problem_id) for problem_id in solved}
     minimum_level = None
-    eligible = set()
+    eligible = {}
     page = 1
     while True:
         result = _get_json(client_id, client_secret, "problems", {
@@ -90,12 +90,13 @@ def candidates(client_id, client_secret, solved):
         for problem in result["problems"]:
             level = problem["level"]
             if minimum_level is not None and level > minimum_level:
-                return sorted(eligible)
+                return eligible
             boj_ids = _boj_ids(problem)
             if not boj_ids or not boj_ids.isdisjoint(solved_ids):
                 continue
             minimum_level = level
-            eligible.add(min(boj_ids))
+            pid = min(boj_ids)
+            eligible[pid] = max(eligible.get(pid, 0), problem["solvedUserCount"])
         if not result["problems"] or page * result["pageSize"] >= result["total"]:
-            return sorted(eligible)
+            return eligible
         page += 1

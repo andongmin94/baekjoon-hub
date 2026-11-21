@@ -81,13 +81,13 @@ def daily_plan(today, previous, eligible, get_completion):
         next_morning = recommendation_day(completed) + timedelta(days=1)
         effective = max(today, next_morning).isoformat()
 
-    # Retain an already scheduled replacement if it is still a valid choice.
     last_used = {pid: date for date, pid in sorted(picks.items())}
     reserved = previous.get(effective)
-    if reserved in eligible:
-        picks[effective] = reserved
-    elif eligible:
-        picks[effective] = min(eligible, key=lambda pid: (last_used.get(pid, ""), pid))
+    if eligible:
+        # Keep the existing tie-breakers when equally many users solved the problems.
+        picks[effective] = min(eligible, key=lambda pid: (
+            -eligible[pid], pid != reserved, last_used.get(pid, ""), pid,
+        ))
     elif current is not None:
         picks[effective] = None
     return picks
