@@ -52,7 +52,8 @@
         const response = await fetch('./picks.json?day=' + today, {cache: 'no-store'});
         if (!response.ok) throw new Error('fetch');
         const data = await response.json();
-        const id = data.picks?.[today];
+        const activeDay = Object.keys(data.picks).filter(day => day <= today).sort().pop();
+        const id = data.picks[activeDay];
         if (!Number.isSafeInteger(id) || id <= 0) {
           statusText.textContent = '오늘 날짜로 등록된 추천 문제가 없어요.';
           fallback.hidden = false;

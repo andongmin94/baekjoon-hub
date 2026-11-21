@@ -1,19 +1,22 @@
 """andongmin94의 한국어 미해결 백준 문제 중 가장 낮은 티어를 찾는다."""
 
 import json
+from datetime import datetime
 from http.client import HTTPException
 from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 
-API_URL = "https://solved.ac/api/v4/problems"
-QUERY = "lang:ko oj:boj -solved_by:andongmin94 tier:b5..r1"
+API_URL = "https://solved.ac/api/v4"
+HANDLE = "andongmin94"
+QUERY = f"lang:ko oj:boj -solved_by:{HANDLE} tier:b5..r1"
 
 
-def _get_page(client_id, client_secret, page):
-    params = urlencode({"q": QUERY, "sort": "level", "direction": "asc", "page": page})
-    request = Request(f"{API_URL}?{params}", headers={
+def _get_json(client_id, client_secret, path, params):
+    if not client_id or not client_secret:
+        raise ValueError("GitHub Actions에 SOLVED_AC_CLIENT_ID와 SOLVED_AC_CLIENT_SECRET을 등록해 주세요.")
+    request = Request(f"{API_URL}/{path}?{urlencode(params)}", headers={
         "Accept": "application/json",
         "User-Agent": "baekjoon-hub-daily/1.0 (+https://github.com/andongmin94/baekjoon-hub)",
     })
@@ -45,26 +48,50 @@ def _get_page(client_id, client_secret, page):
     return result
 
 
+def _boj_ids(problem):
+    return {
+        int(entry["problemId"])
+        for entry in problem["judgeIds"]
+        if entry["ojId"] == "boj" and entry["problemId"].isdecimal()
+    }
+
+
+def solved_at(client_id, client_secret, problem_id):
+    """Return the latest solve timestamp, or None if the problem is unsolved."""
+    params = {"limit": 500}
+    while True:
+        feed = _get_json(client_id, client_secret, f"users/{HANDLE}/activity/feed", params)
+        for event in feed["events"]:
+            if event["type"] not in ("solved", "unsolved") or event["problem"] is None:
+                continue
+            if problem_id not in _boj_ids(event["problem"]):
+                continue
+            if event["type"] == "unsolved":
+                return None
+            timestamp = datetime.fromisoformat(event["occurredAt"].replace("Z", "+00:00"))
+            if timestamp.utcoffset() is None:
+                raise ValueError("solved.ac의 해결 기록에 시간대가 없습니다.")
+            return timestamp
+        if not feed["nextCursor"]:
+            return None
+        params["before"] = feed["nextCursor"]
+
+
 def candidates(client_id, client_secret, solved):
     """Return one BOJ ID per eligible problem in the lowest remaining tier."""
     solved_ids = {int(problem_id) for problem_id in solved}
-    if not client_id or not client_secret:
-        raise ValueError("GitHub Actions에 SOLVED_AC_CLIENT_ID와 SOLVED_AC_CLIENT_SECRET을 등록해 주세요.")
-
     minimum_level = None
     eligible = set()
     page = 1
     while True:
-        result = _get_page(client_id, client_secret, page)
+        result = _get_json(client_id, client_secret, "problems", {
+            "q": QUERY, "sort": "level", "direction": "asc", "page": page,
+        })
         for problem in result["problems"]:
             level = problem["level"]
             if minimum_level is not None and level > minimum_level:
                 return sorted(eligible)
-            boj_ids = {
-                int(entry["problemId"])
-                for entry in problem["judgeIds"]
-                if entry["ojId"] == "boj" and entry["problemId"].isdecimal()
-            }
+            boj_ids = _boj_ids(problem)
             if not boj_ids or not boj_ids.isdisjoint(solved_ids):
                 continue
             minimum_level = level
