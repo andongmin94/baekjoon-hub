@@ -7,7 +7,7 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 
-API_URL = "https://backstage.solved.ac/api/v4/problems"
+API_URL = "https://solved.ac/api/v4/problems"
 QUERY = "lang:ko oj:boj -solved_by:andongmin94 tier:b5..r1"
 
 
@@ -21,7 +21,10 @@ def _get_page(client_id, client_secret, page):
             result = json.load(response)
     except HTTPError as error:
         if error.code in (401, 403):
-            raise ValueError("solved.ac API 인증에 실패했습니다. 앱 ID와 시크릿을 확인해 주세요.") from None
+            reason = error.reason
+            if error.headers.get_content_type() == "application/json":
+                reason = json.load(error).get("error", {}).get("code", reason)
+            raise ValueError(f"solved.ac API가 요청을 거부했습니다 (HTTP {error.code}, {reason}).") from None
         if error.code == 429:
             raise ValueError("solved.ac API 호출 한도에 도달했습니다.") from None
         raise ValueError(f"solved.ac API 요청이 실패했습니다 (HTTP {error.code}).") from None
