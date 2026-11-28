@@ -27,11 +27,34 @@
       font-weight: 700; text-decoration: none;
     }
     .primary:focus-visible { outline-color: #347fb5; }
-    .review { display: block; width: fit-content; font-size: .94rem; color: #536171; }
+    #recap { margin-top: 1.75rem; }
+    .recap-heading {
+      display: flex; align-items: baseline; justify-content: space-between;
+      border-bottom: 1px solid #b7c5cf;
+    }
+    .recap-heading h2 {
+      font-size: 1.125rem; font-weight: 400; margin: 0 0 -1px;
+      padding-bottom: .35rem; border-bottom: 2px solid #0076b9;
+    }
+    #solved-count, .problem-number { color: #536171; font-size: .875rem; }
+    #solved-list { list-style: none; padding: 0; margin: 0; }
+    #solved-list li { border-bottom: 1px solid #d9e1e6; }
+    #solved-list a {
+      display: flex; align-items: baseline; gap: .8rem;
+      padding: .65rem .15rem; overflow-wrap: anywhere;
+    }
+    .problem-number { flex: none; font-variant-numeric: tabular-nums; }
+    #week { width: 100%; margin-top: 1.6rem; table-layout: fixed; border-collapse: collapse; }
+    #week caption { text-align: left; padding-bottom: .4rem; font-size: 1rem; }
+    #week th, #week td { text-align: center; font-variant-numeric: tabular-nums; }
+    #week th { font-size: .8rem; font-weight: 400; color: #536171; }
+    #week td { font-size: .95rem; }
+    #week th:last-child, #week td:last-child { font-weight: 700; }
     @media (prefers-color-scheme: dark) {
       a { color: #8bc9ff; }
       .primary { background: #8bc9ff; color: #102234; }
-      .review { color: #b1beca; }
+      #solved-count, .problem-number, #week th { color: #b1beca; }
+      .recap-heading, #solved-list li { border-bottom-color: #44515b; }
     }
     [hidden] { display: none; }
   </style>
@@ -42,6 +65,18 @@
     <p id="status" role="status">오늘의 추천을 확인하고 있어요.</p>
     <a id="extra" class="primary" hidden>다음 문제 풀기</a>
     <a id="problem" hidden>백준에서 문제 열기</a>
+    <section id="recap" aria-labelledby="recap-title" hidden>
+      <div class="recap-heading">
+        <h2 id="recap-title">오늘 푼 문제</h2>
+        <span id="solved-count"></span>
+      </div>
+      <ul id="solved-list"></ul>
+      <table id="week" hidden>
+        <caption>최근 7일간 푼 문제 수</caption>
+        <thead><tr id="week-days"></tr></thead>
+        <tbody><tr id="week-counts"></tr></tbody>
+      </table>
+    </section>
     <nav id="fallback" aria-label="추천을 확인할 수 없을 때" hidden>
       <a href="https://solved.ac/problems?q=lang%3Ako%20oj%3Aboj%20-solved_by%3Aandongmin94%20tier%3Ab5..r1&amp;sort=level&amp;direction=asc">내가 아직 풀지 않은 한국어 문제 보기</a>
       <a href="https://github.com/andongmin94/baekjoon-hub/settings/secrets/actions">GitHub Actions 시크릿 설정</a>
@@ -60,6 +95,48 @@
       const shiftedTime = new Date(Date.now() - 6 * 60 * 60 * 1000);
       const parts = Object.fromEntries(date.formatToParts(shiftedTime).map(({type, value}) => [type, value]));
       return [parts.year, parts.month, parts.day].join('-');
+    }
+
+    function showRecap(recap, today, currentId) {
+      const problems = recap?.day === today ? recap.solved : [];
+      const list = document.getElementById('solved-list');
+      if (!problems.some(problem => problem.id === currentId)) {
+        problems.push({id: currentId});
+      }
+      for (const {id, title} of problems) {
+        const row = document.createElement('li');
+        const link = document.createElement('a');
+        link.href = 'https://www.acmicpc.net/problem/' + id;
+        if (title) {
+          const number = document.createElement('span');
+          number.className = 'problem-number';
+          number.textContent = id + '번';
+          link.append(number, title);
+        } else {
+          link.textContent = '백준 ' + id + '번';
+        }
+        row.append(link);
+        list.append(row);
+      }
+      document.getElementById('solved-count').textContent = problems.length + '문제';
+      if (recap?.day === today && recap.week?.length === 7) {
+        const dates = document.getElementById('week-days');
+        const counts = document.getElementById('week-counts');
+        const date = new Date(today + 'T00:00:00Z');
+        date.setUTCDate(date.getUTCDate() - 6);
+        for (const [i, count] of recap.week.entries()) {
+          const label = document.createElement('th');
+          label.scope = 'col';
+          label.textContent = (date.getUTCMonth() + 1) + '/' + date.getUTCDate();
+          const value = document.createElement('td');
+          value.textContent = i === 6 ? problems.length : count;
+          dates.append(label);
+          counts.append(value);
+          date.setUTCDate(date.getUTCDate() + 1);
+        }
+        document.getElementById('week').hidden = false;
+      }
+      document.getElementById('recap').hidden = false;
     }
 
     async function openToday() {
@@ -82,8 +159,8 @@
         const nextDay = days.find(day => day > today);
         if (data.rule === 'until-solved' && nextDay !== undefined) {
           document.getElementById('heading').textContent = '오늘 문제는 이미 풀었어요';
-          problemLink.textContent = '내가 푼 ' + id + '번 다시 보기';
-          problemLink.className = 'review';
+          problemLink.hidden = true;
+          showRecap(data.recap, today, id);
           const extraId = data.picks[nextDay];
           if (Number.isSafeInteger(extraId) && extraId > 0 && extraId !== id) {
             const extraLink = document.getElementById('extra');

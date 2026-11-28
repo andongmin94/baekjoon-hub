@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 import shutil
 import subprocess
+from typing import NamedTuple
 from urllib.error import HTTPError
 from urllib.request import urlopen
 
@@ -14,6 +15,11 @@ from candidates import candidates, solved_at
 
 
 KST = timezone(timedelta(hours=9))
+
+
+class Submission(NamedTuple):
+    at: datetime
+    title: str
 
 
 def recommendation_day(instant):
@@ -24,15 +30,44 @@ def solved_in_repository():
     names = subprocess.check_output(
         ["git", "ls-tree", "-rz", "--name-only", "HEAD", "--", "백준"]
     ).decode("utf-8").split("\0")
-    pattern = re.compile(r"^백준/[^/]+/(\d+)\.")
-    readmes = {}
+    pattern = re.compile(r"^백준/[^/]+/(\d+)\.\s*([^/]+)")
+    submissions = {}
     for name in names:
         match = pattern.match(name)
-        if match:
-            paths = readmes.setdefault(int(match[1]), [])
-            if name.endswith("/README.md"):
-                paths.append(name)
-    return readmes
+        if not match:
+            continue
+        pid = int(match[1])
+        previous = submissions.setdefault(pid, None)
+        if not name.endswith("/README.md"):
+            continue
+        text = Path(name).read_text(encoding="utf-8")
+        stamp = re.search(r"^### 제출 일자\s+(\d{4}년 \d{1,2}월 \d{1,2}일 \d{1,2}:\d{2}:\d{2})", text, re.M)
+        if stamp:
+            at = datetime.strptime(stamp[1], "%Y년 %m월 %d일 %H:%M:%S").replace(tzinfo=KST)
+            if previous is None or at < previous.at:
+                heading = re.match(rf"# \[[^\]]+\] (.+) - {pid}\s*$", text.splitlines()[0])
+                submissions[pid] = Submission(at, heading[1] if heading else match[2].strip())
+    return submissions
+
+
+def recap_for_day(submissions, today):
+    first_day = today - timedelta(days=6)
+    week = [0] * 7
+    records = []
+    for pid, sub in submissions.items():
+        if sub is None:
+            continue
+        day = recommendation_day(sub.at)
+        if first_day <= day <= today:
+            week[(day - first_day).days] += 1
+        if day == today:
+            records.append((pid, sub))
+    records.sort(key=lambda item: item[1].at, reverse=True)
+    return {
+        "day": today.isoformat(),
+        "week": week,
+        "solved": [{"id": pid, "title": sub.title} for pid, sub in records],
+    }
 
 
 def previous_picks(base_url, today):
@@ -54,17 +89,12 @@ def previous_picks(base_url, today):
         raise
 
 
-def completion_time(problem, readmes, client_id, secret, now):
-    if problem not in readmes:
+def completion_time(problem, submissions, client_id, secret, now):
+    if problem not in submissions:
         return solved_at(client_id, secret, problem)
-    submissions = []
-    for path in readmes[problem]:
-        text = subprocess.check_output(["git", "show", "HEAD:" + path]).decode("utf-8")
-        match = re.search(r"^### 제출 일자\s+(\d{4}년 \d{1,2}월 \d{1,2}일 \d{1,2}:\d{2}:\d{2})", text, re.M)
-        if match:
-            submissions.append(datetime.strptime(match[1], "%Y년 %m월 %d일 %H:%M:%S").replace(tzinfo=KST))
     # Older uploads without a timestamp still prove completion as of this build.
-    return min(submissions) if submissions else now
+    record = submissions[problem]
+    return record.at if record is not None else now
 
 
 def daily_plan(today, previous, eligible, get_completion):
@@ -99,16 +129,18 @@ def main():
     source = Path(__file__).parent
     client_id = os.environ.get("SOLVED_AC_CLIENT_ID", "")
     secret = os.environ.get("SOLVED_AC_CLIENT_SECRET", "")
-    readmes = solved_in_repository()
-    eligible = candidates(client_id, secret, readmes)
+    submissions = solved_in_repository()
+    eligible = candidates(client_id, secret, submissions)
     previous = previous_picks(os.environ["PAGES_URL"], today)
     picks = daily_plan(today, previous, eligible,
-                       lambda pid: completion_time(pid, readmes, client_id, secret, now))
+                       lambda pid: completion_time(pid, submissions, client_id, secret, now))
+    data = {"source": "api", "rule": "until-solved", "picks": picks,
+            "recap": recap_for_day(submissions, today)}
     output = Path("_site")
     output.mkdir(exist_ok=True)
     shutil.copyfile(source / "index.html", output / "index.html")
     (output / "picks.json").write_text(
-        json.dumps({"source": "api", "rule": "until-solved", "picks": picks}),
+        json.dumps(data, ensure_ascii=False),
         encoding="utf-8",
     )
 
